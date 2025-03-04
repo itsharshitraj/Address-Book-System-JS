@@ -1,5 +1,5 @@
 
-// UC-6: Ability to Count Contacts in Address Book
+// UC-7: Ensure No Duplicate Entry of the Same Person
 class AddressBookContact {
     constructor(firstName, lastName, address, city, state, zip, phoneNumber, email) {
         this.firstName = this.validateName(firstName, "First Name");
@@ -63,7 +63,7 @@ class AddressBookContact {
     }
 }
 
-// UC-6: Ability to Count Contacts in Address Book
+// UC-7: Ensure No Duplicate Entry of the Same Person
 
 class AddressBook {
     constructor() {
@@ -71,23 +71,35 @@ class AddressBook {
     }
 
     addContact(contact) {
-        if (contact instanceof AddressBookContact) {
-            this.contacts.push(contact);
-            console.log("Contact added successfully.");
-        } else {
+        if (!(contact instanceof AddressBookContact)) {
             console.error("Invalid contact. Must be an instance of AddressBookContact.");
+            return;
         }
-    }
+   // Check if a contact with the same first and last name already exists
+   let isDuplicate = this.contacts.some(existingContact => 
+    existingContact.firstName === contact.firstName && 
+    existingContact.lastName === contact.lastName
+);
 
-    deleteContact(firstName, lastName) {
-        let index = this.contacts.findIndex(contact => contact.firstName === firstName && contact.lastName === lastName);
-        if (index !== -1) {
-            this.contacts.splice(index, 1);
-            console.log(`Contact ${firstName} ${lastName} deleted successfully.`);
-        } else {
-            console.log("Contact not found. Deletion failed.");
-        }
+if (isDuplicate) {
+    console.error(`Contact ${contact.firstName} ${contact.lastName} already exists! Duplicate entry not allowed.`);
+    return;
+}
+
+this.contacts.push(contact);
+console.log(`Contact ${contact.firstName} ${contact.lastName} added successfully.`);
+}
+deleteContact(firstName, lastName) {
+    let index = this.contacts.findIndex(contact => contact.firstName === firstName && contact.lastName === lastName);
+    if (index !== -1) {
+        this.contacts.splice(index, 1);
+        console.log(`Contact ${firstName} ${lastName} deleted successfully.`);
+    } else {
+        console.log("Contact not found. Deletion failed.");
     }
+}
+
+  
     countContacts() {
         return this.contacts.length;
     }
@@ -110,15 +122,13 @@ try {
     let contact2 = new AddressBookContact("Jane", "Smith", "456 Elm St", "Los Angeles", "CALs", "900001", "9876543210", "jane.smith@example.com");
     addressBook.addContact(contact2);
 
-    // Display all contacts before editing
-    console.log("\nBefore Editing:");
-    addressBook.displayAllContacts();
+   // Attempting to add a duplicate contact
+   let duplicateContact = new AddressBookContact("John", "Doe", "789 Pine St", "Chicago", "ILion", "600001", "1122334455", "john.doe@newmail.com");
+   addressBook.addContact(duplicateContact); // This should be rejected as duplicate
 
-      // Deleting a contact
-    addressBook.deleteContact("John", "Doe");
 
-       // Display all contacts after deletion
-    console.log("\nAfter Deletion:");
+       // Display all contacts
+  
     addressBook.displayAllContacts();
     
 } catch (error) {
