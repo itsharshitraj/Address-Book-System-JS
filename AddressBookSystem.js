@@ -1,4 +1,4 @@
-// UC-4: Find an Existing Contact and Edit It
+// UC-5: Find a Contact by Name and Delete It
 
 class AddressBookContact {
     constructor(firstName, lastName, address, city, state, zip, phoneNumber, email) {
@@ -57,25 +57,13 @@ class AddressBookContact {
         return email;
     }
 
-    updateContactDetails(updates) {
-        for (let key in updates) {
-            if (this.hasOwnProperty(key)) {
-                if (key === "firstName" || key === "lastName") this[key] = this.validateName(updates[key], key);
-                else if (key === "address" || key === "city" || key === "state") this[key] = this.validateAddress(updates[key], key);
-                else if (key === "zip") this[key] = this.validateZip(updates[key]);
-                else if (key === "phoneNumber") this[key] = this.validatePhone(updates[key]);
-                else if (key === "email") this[key] = this.validateEmail(updates[key]);
-            }
-        }
-    }
-
-
+   
     displayContact() {
         return `Name: ${this.firstName} ${this.lastName}, Address: ${this.address}, ${this.city}, ${this.state} - ${this.zip}, Phone: ${this.phoneNumber}, Email: ${this.email}`;
     }
 }
 
-// UC-4: Adding Find and Edit Contact Functionality
+// UC-5: Adding Delete Contact Functionality
 
 class AddressBook {
     constructor() {
@@ -95,16 +83,35 @@ class AddressBook {
         return this.contacts.find(contact => contact.firstName === firstName && contact.lastName === lastName);
     }
 
+
     editContact(firstName, lastName, updates) {
         let contact = this.findContact(firstName, lastName);
         if (contact) {
-            contact.updateContactDetails(updates);
+            for (let key in updates) {
+                if (this.hasOwnProperty(key)) {
+                    if (key === "firstName" || key === "lastName") contact[key] = contact.validateName(updates[key], key);
+                    else if (key === "address" || key === "city" || key === "state") contact[key] = contact.validateAddress(updates[key], key);
+                    else if (key === "zip") contact[key] = contact.validateZip(updates[key]);
+                    else if (key === "phoneNumber") contact[key] = contact.validatePhone(updates[key]);
+                    else if (key === "email") contact[key] = contact.validateEmail(updates[key]);
+                }
+            }
             console.log("Contact updated successfully.");
         } else {
             console.log("Contact not found.");
         }
     }
 
+    deleteContact(firstName, lastName) {
+        let index = this.contacts.findIndex(contact => contact.firstName === firstName && contact.lastName === lastName);
+        if (index !== -1) {
+            this.contacts.splice(index, 1);
+            console.log(`Contact ${firstName} ${lastName} deleted successfully.`);
+        } else {
+            console.log("Contact not found. Deletion failed.");
+        }
+    }
+ 
     displayAllContacts() {
         console.log("\nAddress Book Contacts:");
         this.contacts.forEach(contact => console.log(contact.displayContact()));
@@ -126,13 +133,13 @@ try {
     console.log("\nBefore Editing:");
     addressBook.displayAllContacts();
 
-     // Editing contact (Updating address and phone number)
-     addressBook.editContact("John", "Doe", { address: "789 Oak St", phoneNumber: "1112223333" });
+      // Deleting a contact
+    addressBook.deleteContact("John", "Doe");
 
-     // Display all contacts after editing
-     console.log("\nAfter Editing:");
-     addressBook.displayAllContacts();
-     
+       // Display all contacts after deletion
+    console.log("\nAfter Deletion:");
+    addressBook.displayAllContacts();
+    
 } catch (error) {
     console.error(error.message);
 }
