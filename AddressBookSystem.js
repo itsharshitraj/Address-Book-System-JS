@@ -1,5 +1,5 @@
-// UC-5: Find a Contact by Name and Delete It
 
+// UC-6: Ability to Count Contacts in Address Book
 class AddressBookContact {
     constructor(firstName, lastName, address, city, state, zip, phoneNumber, email) {
         this.firstName = this.validateName(firstName, "First Name");
@@ -63,7 +63,7 @@ class AddressBookContact {
     }
 }
 
-// UC-5: Adding Delete Contact Functionality
+// UC-6: Ability to Count Contacts in Address Book
 
 class AddressBook {
     constructor() {
@@ -79,29 +79,6 @@ class AddressBook {
         }
     }
 
-    findContact(firstName, lastName) {
-        return this.contacts.find(contact => contact.firstName === firstName && contact.lastName === lastName);
-    }
-
-
-    editContact(firstName, lastName, updates) {
-        let contact = this.findContact(firstName, lastName);
-        if (contact) {
-            for (let key in updates) {
-                if (this.hasOwnProperty(key)) {
-                    if (key === "firstName" || key === "lastName") contact[key] = contact.validateName(updates[key], key);
-                    else if (key === "address" || key === "city" || key === "state") contact[key] = contact.validateAddress(updates[key], key);
-                    else if (key === "zip") contact[key] = contact.validateZip(updates[key]);
-                    else if (key === "phoneNumber") contact[key] = contact.validatePhone(updates[key]);
-                    else if (key === "email") contact[key] = contact.validateEmail(updates[key]);
-                }
-            }
-            console.log("Contact updated successfully.");
-        } else {
-            console.log("Contact not found.");
-        }
-    }
-
     deleteContact(firstName, lastName) {
         let index = this.contacts.findIndex(contact => contact.firstName === firstName && contact.lastName === lastName);
         if (index !== -1) {
@@ -111,10 +88,14 @@ class AddressBook {
             console.log("Contact not found. Deletion failed.");
         }
     }
- 
+    countContacts() {
+        return this.contacts.length;
+    }
+   
     displayAllContacts() {
         console.log("\nAddress Book Contacts:");
         this.contacts.forEach(contact => console.log(contact.displayContact()));
+        console.log(`Total Contacts: ${this.countContacts()}`);
     }
 }
 
