@@ -1,4 +1,4 @@
-// UC-3: Create an Address Book array and add new contacts
+// UC-4: Find an Existing Contact and Edit It
 
 class AddressBookContact {
     constructor(firstName, lastName, address, city, state, zip, phoneNumber, email) {
@@ -57,12 +57,25 @@ class AddressBookContact {
         return email;
     }
 
+    updateContactDetails(updates) {
+        for (let key in updates) {
+            if (this.hasOwnProperty(key)) {
+                if (key === "firstName" || key === "lastName") this[key] = this.validateName(updates[key], key);
+                else if (key === "address" || key === "city" || key === "state") this[key] = this.validateAddress(updates[key], key);
+                else if (key === "zip") this[key] = this.validateZip(updates[key]);
+                else if (key === "phoneNumber") this[key] = this.validatePhone(updates[key]);
+                else if (key === "email") this[key] = this.validateEmail(updates[key]);
+            }
+        }
+    }
+
+
     displayContact() {
         return `Name: ${this.firstName} ${this.lastName}, Address: ${this.address}, ${this.city}, ${this.state} - ${this.zip}, Phone: ${this.phoneNumber}, Email: ${this.email}`;
     }
 }
 
-// UC-3: Creating an Address Book array
+// UC-4: Adding Find and Edit Contact Functionality
 
 class AddressBook {
     constructor() {
@@ -75,6 +88,20 @@ class AddressBook {
             console.log("Contact added successfully.");
         } else {
             console.error("Invalid contact. Must be an instance of AddressBookContact.");
+        }
+    }
+
+    findContact(firstName, lastName) {
+        return this.contacts.find(contact => contact.firstName === firstName && contact.lastName === lastName);
+    }
+
+    editContact(firstName, lastName, updates) {
+        let contact = this.findContact(firstName, lastName);
+        if (contact) {
+            contact.updateContactDetails(updates);
+            console.log("Contact updated successfully.");
+        } else {
+            console.log("Contact not found.");
         }
     }
 
@@ -95,8 +122,17 @@ try {
     let contact2 = new AddressBookContact("Jane", "Smith", "456 Elm St", "Los Angeles", "CALs", "900001", "9876543210", "jane.smith@example.com");
     addressBook.addContact(contact2);
 
-    // Display all contacts
+    // Display all contacts before editing
+    console.log("\nBefore Editing:");
     addressBook.displayAllContacts();
+
+     // Editing contact (Updating address and phone number)
+     addressBook.editContact("John", "Doe", { address: "789 Oak St", phoneNumber: "1112223333" });
+
+     // Display all contacts after editing
+     console.log("\nAfter Editing:");
+     addressBook.displayAllContacts();
+     
 } catch (error) {
     console.error(error.message);
 }
