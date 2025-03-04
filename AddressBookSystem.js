@@ -1,9 +1,8 @@
-// UC-2: Ensure only valid contacts are added
+// UC-3: Create an Address Book array and add new contacts
 
 class AddressBookContact {
     constructor(firstName, lastName, address, city, state, zip, phoneNumber, email) {
-         // Validation before assigning values
-         this.firstName = this.validateName(firstName, "First Name");
+        this.firstName = this.validateName(firstName, "First Name");
         this.lastName = this.validateName(lastName, "Last Name");
         this.address = this.validateAddress(address, "Address");
         this.city = this.validateAddress(city, "City");
@@ -62,13 +61,47 @@ class AddressBookContact {
         return `Name: ${this.firstName} ${this.lastName}, Address: ${this.address}, ${this.city}, ${this.state} - ${this.zip}, Phone: ${this.phoneNumber}, Email: ${this.email}`;
     }
 }
-// Testing valid contact
+
+// UC-3: Creating an Address Book array
+
+class AddressBook {
+    constructor() {
+        this.contacts = []; // Address Book array
+    }
+
+    addContact(contact) {
+        if (contact instanceof AddressBookContact) {
+            this.contacts.push(contact);
+            console.log("Contact added successfully.");
+        } else {
+            console.error("Invalid contact. Must be an instance of AddressBookContact.");
+        }
+    }
+
+    displayAllContacts() {
+        console.log("\nAddress Book Contacts:");
+        this.contacts.forEach(contact => console.log(contact.displayContact()));
+    }
+}
+
+// Creating an Address Book instance
+let addressBook = new AddressBook();
+
 try {
+    // Adding valid contacts
     let contact1 = new AddressBookContact("John", "Doe", "123 Main St", "New York", "NYCs", "100001", "1234567890", "john.doe@example.com");
-    console.log(contact1.displayContact());
+    addressBook.addContact(contact1);
+
+    let contact2 = new AddressBookContact("Jane", "Smith", "456 Elm St", "Los Angeles", "CALs", "900001", "9876543210", "jane.smith@example.com");
+    addressBook.addContact(contact2);
+
+    // Display all contacts
+    addressBook.displayAllContacts();
 } catch (error) {
     console.error(error.message);
 }
+
+
 
 
 
