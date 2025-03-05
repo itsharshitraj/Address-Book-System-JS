@@ -66,7 +66,22 @@ viewByCityOrState(location, type) {
         console.log(`${contact.firstName} ${contact.lastName} - ${contact.city}, ${contact.state}`)
     );
 }
+  
+    // ✅ UC-10: Get number of contacts by City or State
+    countByCityOrState(location, type) {
+        if (type !== "city" && type !== "state") {
+            console.log("Invalid search type! Use 'city' or 'state'.");
+            return;
+        }
+
+        const count = this.contacts.filter(contact =>
+            type === "city" ? contact.city === location : contact.state === location
+        ).length;
+
+        console.log(`Total contacts in ${type} '${location}': ${count}`);
+    }
 }
+
 
 // Example Usage
 const addressBook = new AddressBook();
@@ -77,8 +92,11 @@ addressBook.addContact(new AddressBookContact("Alice", "Brown", "789 Oak St", "N
 // View persons by City
 addressBook.viewByCityOrState("New York", "city");
 
-// View persons by State
-addressBook.viewByCityOrState("CALc", "state");
+// Get count of persons by City
+addressBook.countByCityOrState("New York", "city");
+
+//  Get count of persons by State
+addressBook.countByCityOrState("CA", "state");
 
 
 
