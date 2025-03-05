@@ -43,75 +43,42 @@ class AddressBook {
     }
 
     addContact(contact) {
-        if (!(contact instanceof AddressBookContact)) {
-            console.error("Invalid contact. Must be an instance of AddressBookContact.");
-            return;
+     this.contacts.push(contact);
         }
 
-   // Check if a contact with the same first and last name already exists
-   let isDuplicate = this.contacts.some(existingContact => 
-    existingContact.firstName === contact.firstName && 
-    existingContact.lastName === contact.lastName
-);
-
-  if (isDuplicate) {
-    console.error(`Contact ${contact.firstName} ${contact.lastName} already exists! Duplicate entry not allowed.`);
-    return;
-}
-
- this.contacts.push(contact);
- console.log(`Contact ${contact.firstName} ${contact.lastName} added successfully.`);
-}
-
-  // UC-8: Search Contacts by City
-  searchByCity(city) {
-    let results = this.contacts.filter(contact => contact.city.toLowerCase() === city.toLowerCase());
-    console.log(`Contacts in City "${city}":`);
-    results.forEach(contact => console.log(contact.displayContact()));
-    return results;
-}
-
-// UC-8: Search Contacts by State
-searchByState(state) {
-    let results = this.contacts.filter(contact => contact.state.toLowerCase() === state.toLowerCase());
-    console.log(`Contacts in State "${state}":`);
-    results.forEach(contact => console.log(contact.displayContact()));
-    return results;
-}
-
-   
-    displayAllContacts() {
-        console.log("\nAddress Book Contacts:");
-        this.contacts.forEach(contact => console.log(contact.displayContact()));
-        console.log(`Total Contacts: ${this.countContacts()}`);
+// UC-9: View Persons by City or State
+viewByCityOrState(location, type) {
+    if (type !== "city" && type !== "state") {
+        console.log("Invalid search type! Use 'city' or 'state'.");
+        return;
     }
+    const filteredContacts = this.contacts.filter(contact => 
+        type === "city" ? contact.city === location : contact.state === location
+    );
+
+    if (filteredContacts.length === 0) {
+        console.log(`No contacts found in ${type}: ${location}`);
+        return;
+    }
+
+    console.log(`Contacts in ${type} '${location}':`);
+    filteredContacts.map(contact => 
+        console.log(`${contact.firstName} ${contact.lastName} - ${contact.city}, ${contact.state}`)
+    );
+}
 }
 
-// Creating an Address Book instance
-let addressBook = new AddressBook();
+// Example Usage
+const addressBook = new AddressBook();
+addressBook.addContact(new AddressBookContact("John", "Doe", "123 Main St", "New York", "NYCs", "100010", "1234567890", "john.doe@example.com"));
+addressBook.addContact(new AddressBookContact("Jane", "Smith", "456 Elm St", "Los Angeles", "CALc", "900001", "9876543210", "jane.smith@example.com"));
+addressBook.addContact(new AddressBookContact("Alice", "Brown", "789 Oak St", "New York", "NYCs", "100020", "1122334455", "alice.brown@example.com"));
 
-try {
-    // Adding valid contacts
-    let contact1 = new AddressBookContact("John", "Doe", "123 Main St", "New York", "NYCs", "100001", "1234567890", "john.doe@example.com");
-    addressBook.addContact(contact1);
+// View persons by City
+addressBook.viewByCityOrState("New York", "city");
 
-    let contact2 = new AddressBookContact("Jane", "Smith", "456 Elm St", "Los Angeles", "CALs", "900001", "9876543210", "jane.smith@example.com");
-    addressBook.addContact(contact2);
-
-    let contact3 = new AddressBookContact("Alice", "Brown", "789 Pine St", "New York", "New York", "600001", "1122334455", "alice.brown@example.com");
-    addressBook.addContact(contact3);
-
-    // Searching contacts in a specific city
-    addressBook.searchByCity("New York");
-
-    // Searching contacts in a specific state
-    addressBook.searchByState("California");
-
-    
-} catch (error) {
-    console.error(error.message);
-}
-
+// View persons by State
+addressBook.viewByCityOrState("CALc", "state");
 
 
 
